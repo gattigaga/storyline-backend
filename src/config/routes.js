@@ -14,6 +14,7 @@ const uploadUserPhoto = multer({ dest: "public/images/users" });
 const routes = app => {
   app
     .post("/login", authController.login)
+    .post("/register", authController.register)
     .get(
       "/me",
       passport.authenticate("jwt", { session: false }),

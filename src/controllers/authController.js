@@ -54,5 +54,26 @@ exports.login = async (req, res) => {
   }
 };
 
+// Register new user
+exports.register = async (req, res) => {
+  const { body, file } = req;
+  const payload = { ...body };
+
+  if (file) {
+    payload.photo = file.filename;
+  }
+
+  const newUser = new User(payload);
+
+  try {
+    const user = await newUser.save();
+    res.send(user);
+  } catch (error) {
+    return res.status(400).send({
+      message: "Error occurred while creating user"
+    });
+  }
+};
+
 // Get authenticated user
 exports.me = (req, res) => res.send(req.user);
