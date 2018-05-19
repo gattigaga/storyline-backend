@@ -16,7 +16,21 @@ describe("login()", () => {
     return User.remove({});
   });
 
-  it("should login successfully", async () => {
-    await login(app).expect(200);
+  it("should login with given username", async () => {
+    const credential = {
+      username: "member",
+      password: "member"
+    };
+
+    await login(app, credential).expect(200);
+  });
+
+  it("should login with given email", async () => {
+    const credential = {
+      email: "member@storyline.com",
+      password: "member"
+    };
+
+    await login(app, credential).expect(200);
   });
 });
