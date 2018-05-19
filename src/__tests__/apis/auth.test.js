@@ -66,7 +66,12 @@ describe("POST /login", () => {
 
 describe("GET /me", () => {
   it("should get authenticated user successfully", async () => {
-    const response = await login(app);
+    const credential = {
+      username: "member",
+      password: "member"
+    };
+
+    const response = await login(app, credential);
     const { token } = response.body;
 
     await request(app)
