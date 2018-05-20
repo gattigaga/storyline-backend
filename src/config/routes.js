@@ -3,6 +3,7 @@ const multer = require("multer");
 
 const authController = require("../controllers/authController");
 const userController = require("../controllers/userController");
+const likeController = require("../controllers/likeController");
 
 const uploadUserPhoto = multer({ dest: "public/images/users" });
 
@@ -29,6 +30,17 @@ const routes = app => {
       uploadUserPhoto.single("photo"),
       userController.update
     );
+
+  app
+    .route("/likes")
+    .all(passport.authenticate("jwt", { session: false }))
+    .get(likeController.index)
+    .post(likeController.create);
+
+  app
+    .route("/likes/:id")
+    .all(passport.authenticate("jwt", { session: false }))
+    .delete(likeController.delete);
 };
 
 module.exports = routes;
