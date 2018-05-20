@@ -4,6 +4,7 @@ const multer = require("multer");
 const authController = require("../controllers/authController");
 const userController = require("../controllers/userController");
 const likeController = require("../controllers/likeController");
+const followController = require("../controllers/followController");
 
 const uploadUserPhoto = multer({ dest: "public/images/users" });
 
@@ -41,6 +42,17 @@ const routes = app => {
     .route("/likes/:id")
     .all(passport.authenticate("jwt", { session: false }))
     .delete(likeController.delete);
+
+  app
+    .route("/follows")
+    .all(passport.authenticate("jwt", { session: false }))
+    .get(followController.index)
+    .post(followController.create);
+
+  app
+    .route("/follows/:id")
+    .all(passport.authenticate("jwt", { session: false }))
+    .delete(followController.delete);
 };
 
 module.exports = routes;
