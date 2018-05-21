@@ -1,5 +1,8 @@
 "use strict";
 
+const path = require("path");
+const fs = require("fs");
+
 const User = require("../models/user");
 
 exports.read = async (req, res) => {
@@ -37,6 +40,7 @@ exports.update = async (req, res) => {
   }
 
   try {
+    const { photo } = await User.findOne({ _id: params.id });
     const user = await User.findOneAndUpdate({ _id: params.id }, payload, {
       new: true
     });
@@ -45,6 +49,14 @@ exports.update = async (req, res) => {
       return res.status(404).send({
         message: "User not found"
       });
+    }
+
+    const filePath = path.resolve("public/images/users");
+    const fullpath = `${filePath}/${photo}`;
+
+    // Delete photo if exist
+    if (fs.existsSync(fullpath)) {
+      fs.unlinkSync(fullpath);
     }
 
     res.send(user);

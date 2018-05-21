@@ -1,21 +1,23 @@
 const request = require("supertest");
 const path = require("path");
-const fs = require("fs");
+const fs = require("fs-extra");
 
 const User = require("../../models/user");
 const app = require("../../../app");
 const { login } = require("../../helpers/testUtils");
 
 const photoPath = path.resolve("public/images/users");
+const dummyFile = path.resolve("src/__tests__/fixtures/dummy.png");
 
-const createUser = (_, index) => {
+const createUser = (_, index = "") => {
   const username = `member${index}`;
 
   return {
     name: `Member${index}`,
     username,
     email: `${username}@storyline.com`,
-    password: username
+    password: username,
+    photo: "photo.png"
   };
 };
 
@@ -49,26 +51,26 @@ describe("GET /users/:id", () => {
 });
 
 describe("PUT /users/:id", () => {
-  beforeAll(() => {
-    const users = [...Array(3)].map(createUser);
-
-    return User.create(users);
+  beforeAll(async () => {
+    await fs.copy(dummyFile, `${photoPath}/photo.png`);
+    await User.create(createUser());
   });
 
-  afterAll(() => {
-    return User.remove({});
+  afterAll(async () => {
+    await fs.remove(photoPath);
+    await User.remove({});
   });
 
   it("should update an user successfully", async () => {
     const credential = {
-      username: "member0",
-      password: "member0"
+      username: "member",
+      password: "member"
     };
 
     const response = await login(app, credential);
     const { token } = response.body;
 
-    const user = await User.findOne({ username: credential.username });
+    const user = await User.findOne({});
 
     await request(app)
       .put(`/users/${user._id}`)
@@ -79,27 +81,26 @@ describe("PUT /users/:id", () => {
       .expect(200)
       .expect(res => {
         expect(res.body).toMatchObject({
-          name: "Updated Member",
-          username: credential.username
+          name: "Updated Member"
         });
       });
   });
 
   it("should update an user with photo successfully", async () => {
     const credential = {
-      username: "member0",
-      password: "member0"
+      username: "member",
+      password: "member"
     };
 
     const response = await login(app, credential);
     const { token } = response.body;
 
-    const user = await User.findOne({ username: credential.username });
+    const user = await User.findOne({});
 
     await request(app)
       .put(`/users/${user._id}`)
       .set("Authorization", `Bearer ${token}`)
-      .attach("photo", "src/__tests__/fixtures/dummy.png")
+      .attach("photo", dummyFile)
       .expect(200)
       .expect(res => {
         const oldPhoto = `${photoPath}/${user.photo}`;

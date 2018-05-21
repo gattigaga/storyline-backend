@@ -1,5 +1,4 @@
 const passport = require("passport");
-const multer = require("multer");
 
 const { uploaderUser, uploaderStory } = require("./storage");
 
@@ -9,8 +8,6 @@ const likeController = require("../controllers/likeController");
 const followController = require("../controllers/followController");
 const choiceController = require("../controllers/choiceController");
 const storyController = require("../controllers/storyController");
-
-const uploadUserPhoto = multer({ dest: "public/images/users" });
 
 /**
  * Route list
@@ -32,7 +29,7 @@ const routes = app => {
     .get(userController.read)
     .put(
       passport.authenticate("jwt", { session: false }),
-      uploadUserPhoto.single("photo"),
+      uploaderUser.single("photo"),
       userController.update
     );
 
