@@ -1,11 +1,14 @@
 const passport = require("passport");
 const multer = require("multer");
 
+const { uploaderUser, uploaderStory } = require("./storage");
+
 const authController = require("../controllers/authController");
 const userController = require("../controllers/userController");
 const likeController = require("../controllers/likeController");
 const followController = require("../controllers/followController");
 const choiceController = require("../controllers/choiceController");
+const storyController = require("../controllers/storyController");
 
 const uploadUserPhoto = multer({ dest: "public/images/users" });
 
@@ -65,6 +68,18 @@ const routes = app => {
     .route("/choices/:id")
     .all(passport.authenticate("jwt", { session: false }))
     .delete(choiceController.delete);
+
+  app
+    .route("/stories")
+    .all(passport.authenticate("jwt", { session: false }))
+    .get(storyController.index)
+    .post(uploaderStory.single("thumbnail"), storyController.create);
+
+  app
+    .route("/stories/:id")
+    .all(passport.authenticate("jwt", { session: false }))
+    .put(uploaderStory.single("thumbnail"), storyController.update)
+    .delete(storyController.delete);
 };
 
 module.exports = routes;
