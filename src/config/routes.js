@@ -7,6 +7,7 @@ const userController = require("../controllers/userController");
 const likeController = require("../controllers/likeController");
 const followController = require("../controllers/followController");
 const choiceController = require("../controllers/choiceController");
+const categoryController = require("../controllers/categoryController");
 const storyController = require("../controllers/storyController");
 
 /**
@@ -54,6 +55,8 @@ const routes = app => {
     .route("/follows/:id")
     .all(passport.authenticate("jwt", { session: false }))
     .delete(followController.delete);
+
+  app.route("/categories").get(categoryController.index);
 
   app
     .route("/choices")
