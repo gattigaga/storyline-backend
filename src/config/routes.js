@@ -71,9 +71,12 @@ const routes = app => {
 
   app
     .route("/stories")
-    .all(passport.authenticate("jwt", { session: false }))
     .get(storyController.index)
-    .post(uploaderStory.single("thumbnail"), storyController.create);
+    .post(
+      passport.authenticate("jwt", { session: false }),
+      uploaderStory.single("thumbnail"),
+      storyController.create
+    );
 
   app
     .route("/stories/:id")
