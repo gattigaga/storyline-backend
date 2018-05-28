@@ -10,6 +10,7 @@ exports.index = async (req, res) => {
     userID,
     categoryID,
     title,
+    slug,
     content,
     sort = "asc",
     skip = 0,
@@ -19,6 +20,7 @@ exports.index = async (req, res) => {
 
   if (userID) query.user = userID;
   if (categoryID) query.category = categoryID;
+  if (slug) query.slug = slug;
   if (title) query.title = new RegExp(title, "i");
   if (content) query.content = new RegExp(content, "i");
 

@@ -29,7 +29,7 @@ describe("GET /stories", () => {
         category: categoryID,
         title: "Terrorism Syndicate",
         content: "I will tell my story",
-        slug: "my-story",
+        slug: "my-story-1",
         thumbnail: "thumbnail.png"
       },
       {
@@ -37,7 +37,7 @@ describe("GET /stories", () => {
         category: categoryID,
         title: "Bio Terrorism",
         content: "I will tell my story",
-        slug: "my-story",
+        slug: "my-story-2",
         thumbnail: "thumbnail.png"
       },
       {
@@ -45,7 +45,7 @@ describe("GET /stories", () => {
         category: categoryID,
         title: "My Story",
         content: "So much victim",
-        slug: "my-story",
+        slug: "my-story-3",
         thumbnail: "thumbnail.png"
       },
       {
@@ -53,7 +53,7 @@ describe("GET /stories", () => {
         category: mongoose.Types.ObjectId(),
         title: "My Story",
         content: "So much victim",
-        slug: "my-story",
+        slug: "my-story-4",
         thumbnail: "thumbnail.png"
       },
       {
@@ -61,7 +61,7 @@ describe("GET /stories", () => {
         category: mongoose.Types.ObjectId(),
         title: "My Story",
         content: "I will tell my story",
-        slug: "my-story",
+        slug: "my-story-5",
         thumbnail: "thumbnail.png"
       }
     );
@@ -105,6 +105,24 @@ describe("GET /stories", () => {
       .expect(200)
       .expect(res => {
         expect(res.body.length).toEqual(3);
+      });
+  });
+
+  it("should get stories by slug", async () => {
+    const credential = {
+      username: "member",
+      password: "member"
+    };
+
+    const response = await login(app, credential);
+    const { token } = response.body;
+
+    await request(app)
+      .get(`/stories?slug=my-story-1`)
+      .set("Authorization", `Bearer ${token}`)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.length).toEqual(1);
       });
   });
 
