@@ -13,3 +13,29 @@ exports.index = async (req, res) => {
     });
   }
 };
+
+exports.read = async (req, res) => {
+  const { params } = req;
+
+  try {
+    const category = await Category.findById(params.id);
+
+    if (!category) {
+      return res.status(404).send({
+        message: "Category not found"
+      });
+    }
+
+    res.send(category);
+  } catch (error) {
+    if (error.kind === "ObjectId") {
+      return res.status(404).send({
+        message: "Category not found"
+      });
+    }
+
+    return res.status(500).send({
+      message: "Error retrieving category"
+    });
+  }
+};

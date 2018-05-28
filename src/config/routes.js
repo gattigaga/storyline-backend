@@ -57,6 +57,7 @@ const routes = app => {
     .delete(followController.delete);
 
   app.route("/categories").get(categoryController.index);
+  app.route("/categories/:id").get(categoryController.read);
 
   app
     .route("/choices")
