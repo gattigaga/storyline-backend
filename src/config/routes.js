@@ -36,9 +36,11 @@ const routes = app => {
 
   app
     .route("/likes")
-    .all(passport.authenticate("jwt", { session: false }))
     .get(likeController.index)
-    .post(likeController.create);
+    .post(
+      passport.authenticate("jwt", { session: false }),
+      likeController.create
+    );
 
   app
     .route("/likes/:id")
