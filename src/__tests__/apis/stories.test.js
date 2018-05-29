@@ -243,6 +243,40 @@ describe("POST /stories", () => {
   });
 });
 
+describe("GET /stories/:id", () => {
+  beforeAll(() => {
+    return Story.create({
+      user: mongoose.Types.ObjectId(),
+      category: mongoose.Types.ObjectId(),
+      title: "Terrorism Syndicate",
+      content: "I will tell my story",
+      slug: "my-story-1",
+      thumbnail: "thumbnail.png"
+    });
+  });
+
+  afterAll(() => {
+    return Story.remove({});
+  });
+
+  it("should get a story successfully", async () => {
+    const story = await Story.findOne({});
+
+    await request(app)
+      .get(`/stories/${story._id}`)
+      .expect(200)
+      .expect(res => {
+        expect(`${res.body._id}`).toEqual(`${story._id}`);
+      });
+  });
+
+  it("should failed to get a story", async () => {
+    await request(app)
+      .get("/stories/wR0n6")
+      .expect(404);
+  });
+});
+
 describe("PUT /stories/:id", () => {
   beforeAll(async () => {
     await fs.copy(dummyFile, `${photoPath}/thumbnail.png`);

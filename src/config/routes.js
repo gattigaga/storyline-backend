@@ -83,9 +83,16 @@ const routes = app => {
 
   app
     .route("/stories/:id")
-    .all(passport.authenticate("jwt", { session: false }))
-    .put(uploaderStory.single("thumbnail"), storyController.update)
-    .delete(storyController.delete);
+    .get(storyController.read)
+    .put(
+      passport.authenticate("jwt", { session: false }),
+      uploaderStory.single("thumbnail"),
+      storyController.update
+    )
+    .delete(
+      passport.authenticate("jwt", { session: false }),
+      storyController.delete
+    );
 };
 
 module.exports = routes;

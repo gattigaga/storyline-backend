@@ -60,6 +60,32 @@ exports.create = async (req, res) => {
   }
 };
 
+exports.read = async (req, res) => {
+  const { params } = req;
+
+  try {
+    const story = await Story.findById(params.id);
+
+    if (!story) {
+      return res.status(404).send({
+        message: "Story not found"
+      });
+    }
+
+    res.send(story);
+  } catch (error) {
+    if (error.kind === "ObjectId") {
+      return res.status(404).send({
+        message: "Story not found"
+      });
+    }
+
+    return res.status(500).send({
+      message: "Error retrieving story"
+    });
+  }
+};
+
 exports.update = async (req, res) => {
   const { params, body, file } = req;
   const payload = { ...body };
