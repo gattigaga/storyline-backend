@@ -5,6 +5,23 @@ const fs = require("fs");
 
 const User = require("../models/user");
 
+exports.index = async (req, res) => {
+  const { username } = req.query;
+  const query = {};
+
+  if (username) query.username = username;
+
+  try {
+    const users = await User.find(query);
+
+    res.send(users);
+  } catch (error) {
+    res.status(500).send({
+      message: "Error occurred while retrieving users"
+    });
+  }
+};
+
 exports.read = async (req, res) => {
   const { params } = req;
 

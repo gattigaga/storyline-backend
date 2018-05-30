@@ -21,6 +21,62 @@ const createUser = (_, index = "") => {
   };
 };
 
+describe("GET /stories", () => {
+  beforeAll(async () => {
+    const users = [...Array(4)].map(createUser);
+
+    await User.create(
+      {
+        name: "Member",
+        username: "member",
+        email: "member@storyline.com",
+        password: "member"
+      },
+      ...users
+    );
+  });
+
+  afterAll(async () => {
+    await User.remove({});
+  });
+
+  it("should get all users", async () => {
+    const credential = {
+      username: "member",
+      password: "member"
+    };
+
+    const response = await login(app, credential);
+    const { token } = response.body;
+
+    await request(app)
+      .get(`/users`)
+      .set("Authorization", `Bearer ${token}`)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.length).toEqual(5);
+      });
+  });
+
+  it("should get users by username", async () => {
+    const credential = {
+      username: "member",
+      password: "member"
+    };
+
+    const response = await login(app, credential);
+    const { token } = response.body;
+
+    await request(app)
+      .get(`/users?username=member0`)
+      .set("Authorization", `Bearer ${token}`)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.length).toEqual(1);
+      });
+  });
+});
+
 describe("GET /users/:id", () => {
   beforeAll(() => {
     const users = [...Array(3)].map(createUser);

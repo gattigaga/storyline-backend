@@ -25,6 +25,8 @@ const routes = app => {
       authController.me
     );
 
+  app.route("/users").get(userController.index);
+
   app
     .route("/users/:id")
     .get(userController.read)
