@@ -51,9 +51,11 @@ const routes = app => {
 
   app
     .route("/follows")
-    .all(passport.authenticate("jwt", { session: false }))
     .get(followController.index)
-    .post(followController.create);
+    .post(
+      passport.authenticate("jwt", { session: false }),
+      followController.create
+    );
 
   app
     .route("/follows/:id")
